@@ -34,6 +34,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 
+import com.downloader.OnProgressListener;
+
+import android.util.Log;
+
 /**
  * Created by amitshekhar on 13/11/17.
  */
@@ -79,7 +83,7 @@ public class DownloadTask {
         try {
 
             if (request.getOnProgressListener() != null) {
-                progressHandler = new ProgressHandler(request.getOnProgressListener());
+                // progressHandler = new ProgressHandler(request.getOnProgressListener());
             }
 
             tempPath = Utils.getTempPath(request.getDirPath(), request.getFileName());
@@ -229,6 +233,7 @@ public class DownloadTask {
             }
             Error error = new Error();
             error.setConnectionError(true);
+            error.setException(e);
             response.setError(error);
         } finally {
             closeAllSafely(outputStream);
@@ -300,11 +305,15 @@ public class DownloadTask {
 
     private void sendProgress() {
         if (request.getStatus() != Status.CANCELLED) {
-            if (progressHandler != null) {
-                progressHandler
-                        .obtainMessage(Constants.UPDATE,
-                                new Progress(request.getDownloadedBytes(),
-                                        totalBytes)).sendToTarget();
+            // if (progressHandler != null) {
+            //     progressHandler
+            //             .obtainMessage(Constants.UPDATE,
+            //                     new Progress(request.getDownloadedBytes(),
+            //                             totalBytes)).sendToTarget();
+            // }
+            OnProgressListener progressListener = request.getOnProgressListener();
+            if( progressListener != null ) {
+                progressListener.onProgress( new Progress(request.getDownloadedBytes(),totalBytes) );
             }
         }
     }

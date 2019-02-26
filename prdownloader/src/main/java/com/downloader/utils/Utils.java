@@ -37,6 +37,8 @@ import java.util.List;
 
 public final class Utils {
 
+    private static DownloadIdGenerator gDownloadIdGenerator = null;
+
     private final static int MAX_REDIRECTION = 10;
 
     private Utils() {
@@ -109,9 +111,21 @@ public final class Utils {
                 });
     }
 
+    public static interface DownloadIdGenerator {
+        String calcUniqueId(String url, String dirPath, String fileName);
+    }
+    public static void setGlobalDownloadIdGenerator( DownloadIdGenerator idGen ) {
+        gDownloadIdGenerator = idGen;
+    }
+
     public static int getUniqueId(String url, String dirPath, String fileName) {
 
-        String string = url + File.separator + dirPath + File.separator + fileName;
+        String string = "";//url + File.separator + dirPath + File.separator + fileName;
+        if( gDownloadIdGenerator != null ) {
+            string = gDownloadIdGenerator.calcUniqueId(url, dirPath, fileName);
+        }else {
+            string = url + File.separator + dirPath + File.separator + fileName;
+        }
 
         byte[] hash;
 

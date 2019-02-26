@@ -24,6 +24,7 @@ public class Error {
 
     private boolean isServerError;
     private boolean isConnectionError;
+    private Exception exception;
 
     public boolean isServerError() {
         return isServerError;
@@ -39,5 +40,13 @@ public class Error {
 
     public void setConnectionError(boolean connectionError) {
         isConnectionError = connectionError;
+    }
+
+    public void setException(Exception e) {
+        exception = e;
+    }
+
+    public Exception getException() {
+        return exception;
     }
 }
